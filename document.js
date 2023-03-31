@@ -1,32 +1,39 @@
+const urlParams = new URLSearchParams(window.location.search);
+const tempVar = [urlParams.get('address')]
+const addresses = tempVar;
+const searchBar = document.getElementById('search-bar');
+
 document.addEventListener('DOMContentLoaded', async () => {
     let apiKey = prompt('Please enter your Etherscan API key:');
-    const addresses = [
-        '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-        // Add more addresses if needed
-    ];
 
     function createTransactionRow(transaction) {
         const row = document.createElement('tr');
-
+      
         const hashCell = document.createElement('td');
-        hashCell.innerText = transaction.hash.substring(0, 5) + '...';
+        hashCell.innerText = transaction.hash.substring(0, 10) + '...';
         row.appendChild(hashCell);
-
+      
         const fromCell = document.createElement('td');
-        fromCell.innerText = transaction.from.substring(0, 5) + '...';
+        const fromLink = document.createElement('a');
+        fromLink.href = `?address=${transaction.from}`;
+        fromLink.innerText = transaction.from.substring(0, 10) + '...';
+        fromCell.appendChild(fromLink);
         row.appendChild(fromCell);
-
+      
         const toCell = document.createElement('td');
-        toCell.innerText = transaction.to.substring(0, 5) + '...';
+        const toLink = document.createElement('a');
+        toLink.href = `?address=${transaction.to}`;
+        toLink.innerText = transaction.to.substring(0, 10) + '...';
+        toCell.appendChild(toLink);
         row.appendChild(toCell);
-
+      
         const valueCell = document.createElement('td');
-        const value = parseInt(transaction.value, 5) / Math.pow(10, 18);
+        const value = parseInt(transaction.value, 10) / Math.pow(10, 18);
         valueCell.innerText = value.toFixed(8) + ' ETH';
         row.appendChild(valueCell);
-
+      
         return row;
-    }
+      }
 
     function createCard(address, balance, lastActive, nonZeroTransactions) {
         const card = document.createElement('div');
@@ -115,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tbody.className = 'transaction-list';
 
         nonZeroTransactions.slice(0, 5).forEach(transaction => {
-            tbody.appendChild(createTransactionRow(transaction));
+            tbody.appendChild(createTransactionRow(transaction, address));
         });
 
         transactionTable.appendChild(tbody);
@@ -126,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadMoreButton.innerText = 'Load More Transactions';
         loadMoreButton.addEventListener('click', () => {
             nonZeroTransactions.slice(5).forEach(transaction => {
-                tbody.appendChild(createTransactionRow(transaction));
+                tbody.appendChild(createTransactionRow(transaction, address));
             });
             loadMoreButton.style.display = 'none';
         });
@@ -158,3 +165,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         cardContainer.appendChild(card);
     }
 });
+
+// Add a keypress event listener to the search bar
+searchBar.addEventListener('keypress', (event) => {
+    // If the user hits the enter key, update the URL with the search term
+    if (event.key === 'Enter') {
+      const searchTerm = searchBar.value;
+      console/console.log(searchTerm);
+      window.location.href = `?address=${searchTerm}`;
+    }
+  });
