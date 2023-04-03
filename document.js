@@ -1,11 +1,9 @@
 const urlParams = new URLSearchParams(window.location.search);
-const tempVar = [urlParams.get('address')]
-const addresses = tempVar;
+const addresses = [urlParams.get('address')]
 const searchBar = document.getElementById('search-bar');
+let apiKey = prompt('Please enter your Etherscan API key:');
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let apiKey = prompt('Please enter your Etherscan API key:');
-
     function createTransactionRow(transaction) {
         const row = document.createElement('tr');
       
